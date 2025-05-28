@@ -1,0 +1,843 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BAR Keike</title>
+
+<style>
+
+    * {
+
+        margin: 0;
+
+        padding: 0;
+
+        box-sizing: border-box;
+
+    }
+
+
+
+    body {
+
+        font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        min-height: 100vh;
+
+        color: #333;
+
+    }
+
+
+
+    .container {
+
+        max-width: 1200px;
+
+        margin: 0 auto;
+
+        padding: 20px;
+
+    }
+
+
+
+    .header {
+
+        text-align: center;
+
+        color: white;
+
+        margin-bottom: 30px;
+
+    }
+
+
+
+    .header h1 {
+
+        font-size: 2.5rem;
+
+        margin-bottom: 10px;
+
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+
+    }
+
+
+
+    .mode-toggle {
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 20px;
+
+        margin-bottom: 30px;
+
+    }
+
+
+
+    .mode-btn {
+
+        padding: 12px 24px;
+
+        border: none;
+
+        border-radius: 25px;
+
+        font-size: 1.1rem;
+
+        cursor: pointer;
+
+        transition: all 0.3s ease;
+
+        font-weight: bold;
+
+    }
+
+
+
+    .mode-btn.active {
+
+        background: #fff;
+
+        color: #667eea;
+
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+
+    }
+
+
+
+    .mode-btn:not(.active) {
+
+        background: rgba(255,255,255,0.2);
+
+        color: white;
+
+        border: 2px solid rgba(255,255,255,0.3);
+
+    }
+
+
+
+    .mode-btn:hover {
+
+        transform: translateY(-2px);
+
+    }
+
+
+
+    .section {
+
+        display: none;
+
+        background: rgba(255,255,255,0.95);
+
+        backdrop-filter: blur(10px);
+
+        border-radius: 20px;
+
+        padding: 30px;
+
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+
+    }
+
+
+
+    .section.active {
+
+        display: block;
+
+    }
+
+
+
+    .menu-category {
+
+        margin-bottom: 30px;
+
+    }
+
+
+
+    .category-title {
+
+        font-size: 1.5rem;
+
+        color: #667eea;
+
+        margin-bottom: 15px;
+
+        padding-bottom: 10px;
+
+        border-bottom: 2px solid #667eea;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+    }
+
+
+
+    .gem-icon {
+
+        width: 24px;
+
+        height: 24px;
+
+        display: inline-block;
+
+    }
+
+
+
+    .cocktail-grid {
+
+        display: grid;
+
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+        gap: 20px;
+
+    }
+
+
+
+    .cocktail-card {
+
+        background: white;
+
+        border-radius: 15px;
+
+        padding: 20px;
+
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+        transition: all 0.3s ease;
+
+        cursor: pointer;
+
+        border: 2px solid transparent;
+
+    }
+
+
+
+    .cocktail-card:hover {
+
+        transform: translateY(-5px);
+
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+
+    }
+
+
+
+    .cocktail-card.selected {
+
+        border-color: #667eea;
+
+        background: #f8f9ff;
+
+    }
+
+
+
+    .cocktail-name {
+
+        font-size: 1.2rem;
+
+        font-weight: bold;
+
+        color: #333;
+
+        margin-bottom: 8px;
+
+    }
+
+
+
+    .cocktail-subtitle {
+
+        font-size: 0.9rem;
+
+        color: #666;
+
+        font-style: italic;
+
+        margin-bottom: 10px;
+
+    }
+
+
+
+    .cocktail-ingredients {
+
+        font-size: 0.9rem;
+
+        color: #555;
+
+        margin-bottom: 10px;
+
+    }
+
+
+
+    .cocktail-description {
+
+        font-size: 0.85rem;
+
+        color: #777;
+
+        line-height: 1.4;
+
+    }
+
+
+
+    .order-summary {
+
+        position: fixed;
+
+        bottom: 20px;
+
+        right: 20px;
+
+        background: #667eea;
+
+        color: white;
+
+        padding: 20px;
+
+        border-radius: 15px;
+
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+        min-width: 250px;
+
+        max-height: 400px;
+
+        overflow-y: auto;
+
+        z-index: 1000;
+
+    }
+
+
+
+    .customer-name-input {
+
+        width: 100%;
+
+        padding: 10px;
+
+        margin-bottom: 15px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        font-size: 1rem;
+
+    }
+
+
+
+    .customer-name-input::placeholder {
+
+        color: #999;
+
+    }
+
+
+
+    .order-count {
+
+        font-size: 1.1rem;
+
+        font-weight: bold;
+
+        margin-bottom: 15px;
+
+    }
+
+
+
+    .order-item {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 10px;
+
+        padding: 8px;
+
+        background: rgba(255,255,255,0.1);
+
+        border-radius: 8px;
+
+    }
+
+
+
+    .order-item-name {
+
+        flex: 1;
+
+        font-size: 0.9rem;
+
+    }
+
+
+
+    .order-controls {
+
+        display: flex;
+
+        gap: 5px;
+
+        align-items: center;
+
+    }
+
+
+
+    .qty-btn {
+
+        background: rgba(255,255,255,0.2);
+
+        border: none;
+
+        color: white;
+
+        width: 25px;
+
+        height: 25px;
+
+        border-radius: 50%;
+
+        cursor: pointer;
+
+        font-size: 0.9rem;
+
+    }
+
+
+
+    .qty-btn:hover {
+
+        background: rgba(255,255,255,0.3);
+
+    }
+
+
+
+    .qty-display {
+
+        color: white;
+
+        font-weight: bold;
+
+        min-width: 20px;
+
+        text-align: center;
+
+    }
+
+
+
+    .send-order-btn {
+
+        width: 100%;
+
+        padding: 12px;
+
+        margin-top: 15px;
+
+        background: #fff;
+
+        color: #667eea;
+
+        border: none;
+
+        border-radius: 8px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        font-size: 1rem;
+
+    }
+
+
+
+    .send-order-btn:hover {
+
+        background: #f0f0f0;
+
+    }
+
+
+
+    .send-order-btn:disabled {
+
+        background: #ccc;
+
+        cursor: not-allowed;
+
+    }
+
+
+
+    .kitchen-orders {
+
+        display: grid;
+
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+
+        gap: 20px;
+
+    }
+
+
+
+    .order-card {
+
+        background: white;
+
+        border-radius: 15px;
+
+        padding: 20px;
+
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+        border-left: 5px solid #667eea;
+
+    }
+
+
+
+    .order-header {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        margin-bottom: 15px;
+
+    }
+
+
+
+    .order-customer {
+
+        font-size: 1.1rem;
+
+        font-weight: bold;
+
+        color: #667eea;
+
+        margin-bottom: 5px;
+
+    }
+
+
+
+    .order-time {
+
+        font-size: 0.9rem;
+
+        color: #666;
+
+    }
+
+
+
+    .order-status {
+
+        padding: 5px 10px;
+
+        border-radius: 15px;
+
+        font-size: 0.8rem;
+
+        font-weight: bold;
+
+    }
+
+
+
+    .status-pending {
+
+        background: #fff3cd;
+
+        color: #856404;
+
+    }
+
+
+
+    .status-completed {
+
+        background: #d4edda;
+
+        color: #155724;
+
+    }
+
+
+
+    .cocktail-checklist {
+
+        list-style: none;
+
+    }
+
+
+
+    .cocktail-checklist li {
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 8px 0;
+
+        border-bottom: 1px solid #eee;
+
+    }
+
+
+
+    .cocktail-checklist input[type="checkbox"] {
+
+        width: 18px;
+
+        height: 18px;
+
+        cursor: pointer;
+
+    }
+
+
+
+    .complete-order-btn {
+
+        width: 100%;
+
+        padding: 10px;
+
+        margin-top: 15px;
+
+        background: #28a745;
+
+        color: white;
+
+        border: none;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+
+    }
+
+
+
+    .complete-order-btn:hover {
+
+        background: #218838;
+
+    }
+
+
+
+    .complete-order-btn:disabled {
+
+        background: #ccc;
+
+        cursor: not-allowed;
+
+    }
+
+
+
+    .special-mark {
+
+        font-size: 0.8rem;
+
+        background: #ff6b6b;
+
+        color: white;
+
+        padding: 2px 6px;
+
+        border-radius: 4px;
+
+        margin-left: 5px;
+
+    }
+
+
+
+    .shake-mark {
+
+        font-size: 0.8rem;
+
+        background: #28a745;
+
+        color: white;
+
+        padding: 2px 6px;
+
+        border-radius: 4px;
+
+        margin-left: 5px;
+
+    }
+
+
+
+    .no-orders {
+
+        text-align: center;
+
+        color: #666;
+
+        font-style: italic;
+
+        padding: 40px;
+
+    }
+
+
+
+    @media (max-width: 768px) {
+
+        .container {
+
+            padding: 10px;
+
+        }
+
+
+
+        .cocktail-grid {
+
+            grid-template-columns: 1fr;
+
+        }
+
+
+
+        .order-summary {
+
+            position: static;
+
+            margin-top: 20px;
+
+            width: 100%;
+
+            max-height: none;
+
+        }
+
+
+
+        .kitchen-orders {
+
+            grid-template-columns: 1fr;
+
+        }
+
+    }
+
+</style>
+
+</head><body><div class="container">
+
+    <div class="header">
+
+        <h1>✨宝石カクテルバー✨</h1>
+
+        <p>お好みのカクテルをお選びください</p>
+
+    </div>
+
+
+
+    <div class="mode-toggle">
+
+        <button class="mode-btn active" onclick="switchMode('customer')">🍹 お客様</button>
+
+        <button class="mode-btn" onclick="switchMode('kitchen')">👨‍🍳 キッチン</button>
+
+    </div>
+
+
+
+    <!-- お客様画面 -->
+
+    <div id="customer-section" class="section active">
+
+        <div class="menu-category">
+
+            <h2 class="category-title">
+
+                <span class="gem-icon">💎</span>
+
+                宝石カクテル ★アルコール★
+
+            </h2>
+
+            <div class="cocktail-grid">
+
+                <div class="cocktail-card" onclick="toggleCocktail('サファイア・ナイト')">
+
+                    <div class="cocktail-name">サファイア・ナイト</div>
+
+                    <div class="cocktail-subtitle">「澄んだ夜空の星々」</div>
+
+                    <div class="cocktail-ingredients">ディタ×グレープフルーツ×ブルー×トニック</div>
+
+                    <div class="cocktail-description">ライチとグレープフルーツでさわやかなカクテル。最初の一杯に。</div>
+
+                </div>
+
+                <div class="cocktail-card" onclick="toggleCocktail('ルビー・キス')">
+
+                    <div class="cocktail-name">ルビー・キス <span class="special-mark">特別</span><span class="shake-mark">シェイク</span></div>
+
+                    <div class="cocktail-subtitle">「甘酸っぱくも情熱的に」</div>
+
+                    <div class="cocktail-ingredients">アマレット×レモン×グレナデン＋ソーダ</div>
+
+                    <div class="cocktail-description">あんずのお酒アマレットの甘さとレモンの酸味が絶妙な一杯。</div>
+
+                </div>
+
+                <div class="cocktail-card" onclick="toggleCocktail('トパーズ・サンセット')">
+
+                    <div class="cocktail-name">トパーズ・サンセット</div>
+
+         
